@@ -7,7 +7,10 @@
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
         "start": "node server.js",
-        "dev": "ts-node --esm test.ts"
+        "dev": "ts-node --esm test.ts",
+        "dev:server": "nodemon --ignore processed_tokens.json --ignore config.json --ignore scraper_stats.json --ignore portfolios.json server.js",
+        "dev:ui": "cd scraper && npm run dev",
+        "dev:all": "concurrently -k -n \"server,ui\" \"npm run dev:server\" \"npm run dev:ui\""
     },
     "repository": {
         "type": "git",
@@ -34,7 +37,9 @@
     "devDependencies": {
         "@types/cors": "^2.8.17",
         "@types/express": "^4.17.21",
-        "@types/node": "^20.12.7"
+        "@types/node": "^20.12.7",
+        "concurrently": "^8.2.2",
+        "nodemon": "^3.1.0"
     },
     "keywords": []
 }

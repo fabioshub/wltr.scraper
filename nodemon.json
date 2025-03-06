@@ -1,0 +1,5 @@
+{
+    "ignore": ["processed_tokens.json", "config.json", "scraper_stats.json", "portfolios.json"],
+    "watch": ["server.js", "test.ts"],
+    "ext": "js,ts"
+}
