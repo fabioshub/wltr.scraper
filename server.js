@@ -244,7 +244,17 @@ app.post('/scraper/start', (req, res) => {
 app.post('/scraper/stop', (req, res) => {
     try {
         if (scraperProcess && !scraperProcess.killed) {
-            scraperProcess.kill();
+            // Check if we're on Windows
+            const isWindows = process.platform === 'win32';
+
+            if (isWindows) {
+                // On Windows, we need to use taskkill to terminate the process tree
+                spawn('taskkill', ['/pid', scraperProcess.pid, '/f', '/t']);
+            } else {
+                // On Unix-like systems, we can use the kill method
+                scraperProcess.kill();
+            }
+
             scraperProcess = null;
         }
         res.json({
