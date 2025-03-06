@@ -1,0 +1,6 @@
+node_modules/
+.env
+cookies.json
+processed_tokens.json
+screenshots/
+dist/

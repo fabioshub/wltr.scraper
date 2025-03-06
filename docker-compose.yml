@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+    server:
+        build: .
+        network_mode: host
+        volumes:
+            - .:/app
+            - /app/node_modules
+        environment:
+            - HOST_IP=${HOST_IP:-host.docker.internal}
+
+    frontend:
+        build: ./scraper
+        network_mode: host
+        volumes:
+            - ./scraper:/app
+            - /app/node_modules
+        depends_on:
+            - server

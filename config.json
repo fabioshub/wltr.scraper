@@ -1,0 +1,10 @@
+{
+  "MIN_PNL": "25000",
+  "MIN_ROI": "2000",
+  "MAX_TOKENS_TO_PROCESS": "10",
+  "MAX_TRADERS_PER_TOKEN": "20",
+  "START_FROM_ROW": "1",
+  "CHROME_DEBUG_PORT": "9222",
+  "BASE_URL": "https://neo.bullx.io",
+  "HOST_IP": "localhost"
+}
