@@ -205,13 +205,6 @@ app.post('/scraper/start', (req, res) => {
         console.log('Starting scraper with command:', command);
         scraperProcess = spawn(command, ['tsx', 'test.ts'], options);
 
-        // Handle stdout
-        scraperProcess.stdout?.on('data', (data) => {
-            const output = data.toString();
-            console.log('Scraper stdout:', output);
-            io.emit('scraper-log', { type: 'output', data: output });
-        });
-
         // Handle stderr
         scraperProcess.stderr?.on('data', (data) => {
             const output = data.toString();
