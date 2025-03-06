@@ -146,7 +146,7 @@ app.get('/config', (req, res) => {
                   START_FROM_ROW: '3',
                   CHROME_DEBUG_PORT: '9222',
                   BASE_URL: 'https://neo.bullx.io',
-                  HOST_IP: '0.0.0.0',
+                  HOST_IP: 'localhost',
               };
         res.json(config);
     } catch (error) {
@@ -196,7 +196,7 @@ app.post('/scraper/start', (req, res) => {
                 ...process.env,
                 NODE_NO_WARNINGS: '1',
                 CHROME_DEBUG_PORT: '9222',
-                HOST_IP: 'localhost',
+                HOST_IP: '0.0.0.0',
                 BASE_URL: 'https://neo.bullx.io',
                 DEBUG: '*',
             },
