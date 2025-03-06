@@ -196,7 +196,7 @@ app.post('/scraper/start', (req, res) => {
                 ...process.env,
                 NODE_NO_WARNINGS: '1',
                 CHROME_DEBUG_PORT: '9222',
-                HOST_IP: 'host.docker.internal',
+                HOST_IP: 'localhost',
                 BASE_URL: 'https://neo.bullx.io',
                 DEBUG: '*',
             },

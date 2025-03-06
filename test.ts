@@ -22,7 +22,7 @@ const CHROME_DEBUG_PORT = Number(process.env.CHROME_DEBUG_PORT) || 9222;
 const BASE_URL = process.env.BASE_URL || 'https://neo.bullx.io';
 
 // Get the host IP from environment variable or use default
-const HOST_IP = process.env.HOST_IP || 'host.docker.internal';
+const HOST_IP = process.env.HOST_IP || 'localhost';
 
 const PROCESSED_TOKENS_FILE = path.join(__dirname, 'processed_tokens.json');
 

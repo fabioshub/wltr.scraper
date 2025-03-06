@@ -428,7 +428,7 @@ function App() {
                                     placeholder="Enter host IP"
                                 />
                                 <p className="text-sm text-muted-foreground">
-                                    The IP address of the host machine (use 'host.docker.internal' for Docker)
+                                    The IP address of the host machine (use 'localhost' for Docker)
                                 </p>
                             </div>
 

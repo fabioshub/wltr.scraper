@@ -8,7 +8,7 @@ services:
             - .:/app
             - /app/node_modules
         environment:
-            - HOST_IP=${HOST_IP:-host.docker.internal}
+            - HOST_IP=${HOST_IP:-localhost}
 
     frontend:
         build: ./scraper
