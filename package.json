@@ -8,6 +8,7 @@
         "test": "echo \"Error: no test specified\" && exit 1",
         "start": "node server.js",
         "dev": "cross-env NODE_OPTIONS='--trace-warnings' ts-node --esm test.ts",
+        "get": "npm i && cd scraper && npm i --legacy-peer-deps && cd ..",
         "dev:server": "cross-env DEBUG=* nodemon --ignore processed_tokens.json --ignore config.json --ignore scraper_stats.json --ignore portfolios.json server.js",
         "dev:ui": "cd scraper && npm run dev",
         "dev:all": "concurrently -k -n \"server,ui\" \"npm run dev:server\" \"npm run dev:ui\""

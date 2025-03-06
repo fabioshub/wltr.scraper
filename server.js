@@ -32,6 +32,18 @@ const PORTFOLIOS_FILE = path.join(__dirname, 'portfolios.json');
 const PROCESSED_TOKENS_FILE = path.join(__dirname, 'processed_tokens.json');
 const STATS_FILE = path.join(__dirname, 'scraper_stats.json');
 
+// Create portfolios.json with empty object if it doesn't exist
+if (!fs.existsSync(PORTFOLIOS_FILE)) {
+    fs.writeFileSync(PORTFOLIOS_FILE, '{}', 'utf8');
+    console.log('Created empty portfolios.json file');
+}
+
+// Create scraper_stats.json with default values if it doesn't exist
+if (!fs.existsSync(STATS_FILE)) {
+    fs.writeFileSync(STATS_FILE, JSON.stringify({ portfoliosChecked: 0 }, null, 2), 'utf8');
+    console.log('Created scraper_stats.json with default values');
+}
+
 // Track scraper process
 let scraperProcess = null;
 
