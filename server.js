@@ -266,6 +266,7 @@ app.post('/scraper/stop', (req, res) => {
     }
 });
 
+// POST endpoint to clear processed tokens
 app.post('/clear-processed-tokens', (req, res) => {
     try {
         // Read the current tokens to get the count
@@ -288,6 +289,37 @@ app.post('/clear-processed-tokens', (req, res) => {
     }
 });
 
+// POST endpoint to update code from git
+app.post('/update', (req, res) => {
+    try {
+        exec('git pull', { cwd: __dirname }, (error, stdout, stderr) => {
+            if (error) {
+                console.error('Error executing git pull:', error);
+                res.status(500).json({
+                    success: false,
+                    message: 'Failed to update code',
+                    error: error.message,
+                });
+                return;
+            }
+
+            res.json({
+                success: true,
+                message: 'Code updated successfully',
+                output: stdout,
+                error: stderr,
+            });
+        });
+    } catch (error) {
+        console.error('Error updating code:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Failed to update code',
+            error: error.message,
+        });
+    }
+});
+
 // Start the server
 httpServer.listen(port, () => {
     console.log(`Server running at http://localhost:${port}`);
@@ -301,4 +333,5 @@ httpServer.listen(port, () => {
     console.log('  GET  /processed-tokens - Get processed tokens');
     console.log('  POST /clear-processed-tokens - Clear processed tokens');
     console.log('  GET  /scraper-stats   - Get scraper stats');
+    console.log('  POST /update          - Update code from git');
 });

@@ -53,6 +53,7 @@ function App() {
     const [clearingTokens, setClearingTokens] = useState(false);
     const [tokenCount, setTokenCount] = useState<number | null>(null);
     const [scraperStats, setScraperStats] = useState<ScraperStats>({ portfoliosChecked: 0 });
+    const [updating, setUpdating] = useState(false);
 
     const fetchConfig = async () => {
         try {
@@ -288,6 +289,37 @@ function App() {
         return () => clearInterval(interval);
     }, []);
 
+    const handleUpdate = async () => {
+        if (!window.confirm('Are you sure you want to update the code from git?')) {
+            return;
+        }
+
+        setUpdating(true);
+        try {
+            const response = await fetch('http://localhost:4444/update', {
+                method: 'POST',
+            });
+            const data = await response.json();
+            if (data.success) {
+                toast({
+                    title: 'Success',
+                    description: 'Code updated successfully.',
+                });
+            } else {
+                throw new Error(data.message || 'Failed to update code');
+            }
+        } catch (error) {
+            console.error('Error updating code:', error);
+            toast({
+                title: 'Error',
+                description: error instanceof Error ? error.message : 'Failed to update code',
+                variant: 'destructive',
+            });
+        } finally {
+            setUpdating(false);
+        }
+    };
+
     return (
         <div className="min-h-screen  py-8 px-4">
             <div className="max-w-6xl mx-auto space-y-6">
@@ -300,24 +332,18 @@ function App() {
                 <Card>
                     <CardHeader>
                         <CardTitle>Scraper Control</CardTitle>
-                        <CardDescription>
-                            Control and monitor the scraper status. Current status:{' '}
-                            <span className={scraperStatus.status === 'running' ? 'text-green-500' : 'text-red-500'}>
-                                {scraperStatus.status.toUpperCase()}
-                            </span>
-                            {scraperStatus.pid && ` (PID: ${scraperStatus.pid})`}
-                        </CardDescription>
+                        <CardDescription>Control and monitor the scraper status.</CardDescription>
                     </CardHeader>
                     <CardContent>
                         <div className="flex gap-4">
                             <Button onClick={handleStartScraper} disabled={scraperStatus.status === 'running'}>
                                 {scraperStatus.status === 'running' ? 'Running...' : 'Start Scraper'}
                             </Button>
-                            <Button onClick={handleStopScraper} disabled={scraperStatus.status !== 'running'}>
-                                Stop Scraper
-                            </Button>
                             <Button onClick={handleClearProcessedTokens} disabled={clearingTokens} variant="outline">
                                 {clearingTokens ? 'Clearing...' : `Clear Processed Tokens (${tokenCount ?? '...'})`}
+                            </Button>
+                            <Button onClick={handleUpdate} disabled={updating} variant="secondary">
+                                {updating ? 'Updating...' : 'Update Code'}
                             </Button>
                         </div>
                         {scraperError && <div className="text-red-500 text-sm mt-2">{scraperError}</div>}
