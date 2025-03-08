@@ -6,3 +6,4 @@ screenshots/
 dist/
 portfolios.json
 scraper_stats.json
+config.json
