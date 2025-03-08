@@ -199,8 +199,16 @@ app.post('/scraper/start', (req, res) => {
         // Check if we're on Windows
         const isWindows = process.platform === 'win32';
 
-        // Configure the command based on platform
-        const command = `${isWindows ? 'npx.cmd' : 'npx'} tsx test.ts`;
+        // Configure the command and options based on platform
+        let command;
+        if (isWindows) {
+            // For Windows, use start cmd
+            command = `start cmd.exe /K "npx tsx test.ts"`;
+        } else {
+            // For macOS/Linux, use osascript to open Terminal
+            command = `osascript -e 'tell app "Terminal" to do script "cd ${__dirname} && npx tsx test.ts"'`;
+        }
+
         const options = {
             env: {
                 ...process.env,
@@ -210,6 +218,7 @@ app.post('/scraper/start', (req, res) => {
                 BASE_URL: 'https://neo.bullx.io',
                 DEBUG: '*',
             },
+            shell: true,
         };
 
         console.log('Starting scraper with command:', command);
