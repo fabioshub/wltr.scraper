@@ -325,7 +325,7 @@ function App() {
             <div className="max-w-6xl mx-auto space-y-6">
                 <Card className="mb-8  shadow-none border-none">
                     <CardHeader>
-                        <CardTitle className="text-2xl font-bold tracking-tight">WLTR. Scraper</CardTitle>
+                        <CardTitle className="text-2xl font-bold tracking-tight">WLTR. Scraper v1</CardTitle>
                     </CardHeader>
                 </Card>
                 {/* Scraper Control Card */}
