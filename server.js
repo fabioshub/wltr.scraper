@@ -3,7 +3,7 @@ import cors from 'cors';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { spawn } from 'child_process';
+import { exec } from 'child_process';
 import { createServer } from 'http';
 import { Server } from 'socket.io';
 
@@ -199,45 +199,21 @@ app.post('/scraper/start', (req, res) => {
         // Check if we're on Windows
         const isWindows = process.platform === 'win32';
 
-        // Configure the spawn command based on platform
-        const command = isWindows ? 'npx.cmd' : 'npx';
+        // Configure the command based on platform
+        const command = `${isWindows ? 'npx.cmd' : 'npx'} tsx test.ts`;
         const options = {
-            stdio: ['inherit', 'pipe', 'pipe'],
-            shell: true,
             env: {
                 ...process.env,
                 NODE_NO_WARNINGS: '1',
                 CHROME_DEBUG_PORT: '9222',
-                HOST_IP: '0.0.0.0',
+                HOST_IP: 'localhost',
                 BASE_URL: 'https://neo.bullx.io',
                 DEBUG: '*',
             },
         };
 
         console.log('Starting scraper with command:', command);
-        scraperProcess = spawn(command, ['tsx', 'test.ts'], options);
-
-        // Handle stderr
-        scraperProcess.stderr?.on('data', (data) => {
-            const output = data.toString();
-            console.error('Scraper stderr:', output);
-            io.emit('scraper-log', { type: 'error', data: output });
-        });
-
-        scraperProcess.on('error', (error) => {
-            console.error('Failed to start scraper:', error);
-            io.emit('scraper-log', { type: 'error', data: error.message });
-            scraperProcess = null;
-        });
-
-        scraperProcess.on('exit', (code, signal) => {
-            console.log(`Scraper process exited with code ${code} and signal ${signal}`);
-            io.emit('scraper-log', {
-                type: 'info',
-                data: `Process exited with code ${code} and signal ${signal}`,
-            });
-            scraperProcess = null;
-        });
+        scraperProcess = exec(command, options);
 
         res.json({
             status: 'running',
@@ -261,7 +237,7 @@ app.post('/scraper/stop', (req, res) => {
 
             if (isWindows) {
                 // On Windows, we need to use taskkill to terminate the process tree
-                spawn('taskkill', ['/pid', scraperProcess.pid, '/f', '/t']);
+                exec('taskkill /pid ' + scraperProcess.pid + ' /f /t');
             } else {
                 // On Unix-like systems, we can use the kill method
                 scraperProcess.kill();
