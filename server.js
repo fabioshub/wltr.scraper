@@ -203,7 +203,7 @@ app.post('/scraper/start', (req, res) => {
         let command;
         if (isWindows) {
             // For Windows, create a command that waits before executing
-            command = `start cmd.exe /K "timeout /t 5 /nobreak && npx tsx test.ts"`;
+            command = `start cmd.exe /K "timeout 5 /nobreak && npx tsx test.ts"`;
         } else {
             // For macOS/Linux, use osascript to open Terminal
             command = `osascript -e 'tell app "Terminal" to do script "cd ${__dirname} && npx tsx test.ts"'`;
