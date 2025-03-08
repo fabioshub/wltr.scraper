@@ -202,8 +202,8 @@ app.post('/scraper/start', (req, res) => {
         // Configure the command and options based on platform
         let command;
         if (isWindows) {
-            // For Windows, use ping as a delay mechanism (pings localhost 5 times with 1 second intervals)
-            command = `cmd.exe /c "start cmd.exe /k "ping 127.0.0.1 -n 6 > nul && npx tsx test.ts""`;
+            // For Windows, create a simple batch command with fewer nested quotes
+            command = `cmd.exe /c start cmd.exe /k "ping 127.0.0.1 -n 6 > nul & cd ${__dirname} & npx tsx test.ts"`;
         } else {
             // For macOS/Linux, use osascript to open Terminal
             command = `osascript -e 'tell app "Terminal" to do script "cd ${__dirname} && npx tsx test.ts"'`;
