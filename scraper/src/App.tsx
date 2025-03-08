@@ -310,26 +310,13 @@ function App() {
                     </CardHeader>
                     <CardContent>
                         <div className="flex gap-4">
-                            <Button
-                                onClick={handleStartScraper}
-                                disabled={scraperStatus.status === 'running'}
-                                variant={scraperStatus.status === 'running' ? 'secondary' : 'default'}
-                            >
+                            <Button onClick={handleStartScraper} disabled={scraperStatus.status === 'running'}>
                                 {scraperStatus.status === 'running' ? 'Running...' : 'Start Scraper'}
                             </Button>
-                            <Button
-                                onClick={handleStopScraper}
-                                disabled={scraperStatus.status !== 'running'}
-                                variant="destructive"
-                            >
+                            <Button onClick={handleStopScraper} disabled={scraperStatus.status !== 'running'}>
                                 Stop Scraper
                             </Button>
-                            <Button
-                                onClick={handleClearProcessedTokens}
-                                disabled={clearingTokens}
-                                variant="outline"
-                                className="text-white bg-black hover:bg-gray-800"
-                            >
+                            <Button onClick={handleClearProcessedTokens} disabled={clearingTokens} variant="outline">
                                 {clearingTokens ? 'Clearing...' : `Clear Processed Tokens (${tokenCount ?? '...'})`}
                             </Button>
                         </div>
