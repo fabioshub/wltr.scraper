@@ -222,11 +222,11 @@ app.post('/scraper/start', (req, res) => {
         };
 
         console.log('Starting scraper with command:', command);
-        scraperProcess = exec(command, options);
+        exec(command, options);
 
         res.json({
             status: 'running',
-            pid: scraperProcess.pid,
+            pid: 1,
         });
     } catch (error) {
         console.error('Error starting scraper:', error);
