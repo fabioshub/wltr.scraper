@@ -289,9 +289,9 @@ function App() {
     }, []);
 
     return (
-        <div className="min-h-screen bg-gray-100 py-8 px-4">
+        <div className="min-h-screen  py-8 px-4">
             <div className="max-w-6xl mx-auto space-y-6">
-                <Card className="mb-8 bg-gray-100 shadow-none border-none">
+                <Card className="mb-8  shadow-none border-none">
                     <CardHeader>
                         <CardTitle className="text-2xl font-bold tracking-tight">WLTR. Scraper</CardTitle>
                     </CardHeader>

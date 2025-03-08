@@ -202,8 +202,8 @@ app.post('/scraper/start', (req, res) => {
         // Configure the command and options based on platform
         let command;
         if (isWindows) {
-            // For Windows, use start cmd
-            command = `start cmd.exe /K "npx tsx test.ts"`;
+            // For Windows, create a command that waits before executing
+            command = `start cmd.exe /K "timeout /t 5 /nobreak && npx tsx test.ts"`;
         } else {
             // For macOS/Linux, use osascript to open Terminal
             command = `osascript -e 'tell app "Terminal" to do script "cd ${__dirname} && npx tsx test.ts"'`;

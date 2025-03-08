@@ -133,15 +133,31 @@ async function main() {
             timeout: 60000,
         });
 
-        console.log('Page loaded successfully');
+        console.log('Page loaded, waiting for network to be idle...');
+        await page.waitForLoadState('networkidle', { timeout: 60000 });
+        console.log('Network is idle, waiting for DOM content...');
+        await page.waitForLoadState('domcontentloaded', { timeout: 60000 });
 
-        // Wait for the table body to be visible
-        await page.waitForSelector('.b-table-body');
-        await page.waitForTimeout(2000);
+        console.log('Waiting for table body...');
+        await page.waitForSelector('.b-table-body', { state: 'visible', timeout: 60000 });
+        console.log('Table body found, waiting additional time for content to stabilize...');
+        await page.waitForTimeout(3000);
 
         // Get all token rows
+        console.log('Looking for token rows...');
         const tokenRows = await page.$$('.b-table-row');
         console.log(`Found ${tokenRows.length} token rows in the table`);
+
+        // Verify rows are actually visible and interactive
+        for (const row of tokenRows.slice(0, 3)) {
+            // Check first 3 rows
+            const isVisible = await row.isVisible();
+            console.log(`Row visible: ${isVisible}`);
+            if (isVisible) {
+                const box = await row.boundingBox();
+                console.log(`Row bounding box:`, box);
+            }
+        }
 
         // Load previously processed token names
         const processedTokenNames = loadProcessedTokens();
