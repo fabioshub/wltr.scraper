@@ -571,6 +571,62 @@ async function main() {
                         continue;
                     }
 
+                    const mostProfitableDiv = await page.$('div[data-node-key="MOST_PROFITABLE"]');
+                    if (mostProfitableDiv) {
+                        await mostProfitableDiv.click();
+                    } else {
+                        console.log(`Row ${rowNumber} - MOST_PROFITABLE div not found`);
+                        await page.click('button.w-5.h-5.bg-transparent.outline-none');
+                        continue;
+                    }
+
+                    await page.waitForTimeout(1000);
+
+                    // Find all rows in the modal
+                    const mostProfitRows = await page
+                        .locator('.ant-modal-content .ant-tabs-tabpane-active .b-table-row')
+                        .all();
+
+                    await page.waitForTimeout(1000);
+
+                    if (mostProfitRows.length < 10) {
+                        console.log(
+                            `Row ${rowNumber} - Not enough most profitable rows, skipping (${mostProfitRows.length} rows)`,
+                        );
+                        await page.click('button.w-5.h-5.bg-transparent.outline-none');
+                        incrementPortfoliosChecked();
+                        continue;
+                    }
+
+                    // Log the number from the second b-table-cell
+                    const numbers = [];
+                    for (let index = 0; index < mostProfitRows.length; index++) {
+                        try {
+                            // Use the specific row element instead of a global selector
+                            const row = mostProfitRows[index];
+                            const secondCell = await row.locator('.b-table-cell:nth-of-type(2) div').textContent();
+
+                            const numberMatch = secondCell?.match(/\$?\s*([\d.]+)/);
+                            if (numberMatch) {
+                                const numberValue = parseFloat(numberMatch[1]);
+                                numbers.push(numberValue);
+                            }
+                        } catch (error) {
+                            console.log(`Error processing table row ${index}: ${error}`);
+                        }
+                    }
+
+                    // Check if 20% of the numbers are 0
+                    const zeroCount = numbers.filter((num) => num === 0).length;
+                    if (zeroCount > 3) {
+                        console.log(
+                            `Row ${rowNumber} - Skipping portfolio - too many 0s (${zeroCount} out of ${numbers.length})`,
+                        );
+                        await page.click('button.w-5.h-5.bg-transparent.outline-none');
+                        incrementPortfoliosChecked();
+                        continue;
+                    }
+
                     console.log(`Row ${rowNumber} - Trade duration check passed, proceeding with portfolio save`);
 
                     const portfolioData = {

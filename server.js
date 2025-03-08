@@ -44,6 +44,22 @@ if (!fs.existsSync(STATS_FILE)) {
     console.log('Created scraper_stats.json with default values');
 }
 
+// Create config.json with default values if it doesn't exist
+if (!fs.existsSync(CONFIG_FILE)) {
+    const defaultConfig = {
+        MIN_PNL: '1000',
+        MIN_ROI: '10',
+        MAX_TOKENS_TO_PROCESS: '10',
+        MAX_TRADERS_PER_TOKEN: '20',
+        START_FROM_ROW: '1',
+        CHROME_DEBUG_PORT: '9222',
+        BASE_URL: 'https://neo.bullx.io',
+        HOST_IP: 'localhost',
+    };
+    fs.writeFileSync(CONFIG_FILE, JSON.stringify(defaultConfig, null, 2), 'utf8');
+    console.log('Created config.json with default values');
+}
+
 // Track scraper process
 let scraperProcess = null;
 
