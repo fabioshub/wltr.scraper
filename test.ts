@@ -378,8 +378,8 @@ async function main() {
                     }, '//span[text()="Total Revenue"]/following-sibling::span');
 
                     // Find and extract Realized PnL
-                    const realizedPnLDiv = await page.locator('span:text("Realized PnL")');
-                    const pnlValueDiv = realizedPnLDiv.locator('xpath=./following-sibling::span').first();
+                    let realizedPnLDiv = await page.locator('span:text("Realized PnL")');
+                    let pnlValueDiv = realizedPnLDiv.locator('xpath=./following-sibling::span').first();
 
                     // Wait for loader to disappear and number to appear
                     await page.waitForFunction((selector) => {
@@ -398,8 +398,8 @@ async function main() {
                         );
                     }, '//span[text()="Realized PnL"]/following-sibling::span[1]');
 
-                    const revenueValue = (await revenueValueSpan.textContent()) || '0';
-                    const cleanRevenueValue = revenueValue.replace(/[^0-9MKk.]/g, ''); // Remove everything except numbers, dots, M and K
+                    let revenueValue = (await revenueValueSpan.textContent()) || '0';
+                    let cleanRevenueValue = revenueValue.replace(/[^0-9MKk.]/g, ''); // Remove everything except numbers, dots, M and K
 
                     let revenueDollars = parseFloat(cleanRevenueValue);
                     if (cleanRevenueValue.toUpperCase().endsWith('M')) {
@@ -408,8 +408,8 @@ async function main() {
                         revenueDollars *= 1000;
                     }
 
-                    const pnlValue = (await pnlValueDiv.textContent()) || '0';
-                    const cleanPnlValue = pnlValue.replace(/[^0-9MKk.]/g, '');
+                    let pnlValue = (await pnlValueDiv.textContent()) || '0';
+                    let cleanPnlValue = pnlValue.replace(/[^0-9MKk.]/g, '');
 
                     let pnlDollars = parseFloat(cleanPnlValue);
                     if (cleanPnlValue.toUpperCase().endsWith('M')) {
@@ -427,6 +427,72 @@ async function main() {
                         continue;
                     }
                     console.log(`Row ${rowNumber} - Total Revenue:`, revenueDollars);
+
+                    // Try to click the 7D button with different selectors and add error handling
+                    try {
+                        // First attempt with text selector
+                        await page.click('.ant-modal-content button:text("7D")');
+                        console.log('Successfully clicked 7D button with text selector');
+                    } catch (error) {
+                        console.log('Failed to click 7D button with text selector, trying alternatives...');
+                        try {
+                            // Try with exact text
+                            await page.click('button:has-text("7D")');
+                            console.log('Successfully clicked 7D button with has-text selector');
+                        } catch (error) {
+                            console.log('Failed with has-text selector, trying with XPath...');
+                            try {
+                                // Try with XPath
+                                await page.click('xpath=//button[contains(text(), "7D")]');
+                                console.log('Successfully clicked 7D button with XPath');
+                            } catch (error) {
+                                console.warn('All attempts to click 7D button failed:', error);
+                                // Continue without clicking the button as a fallback
+                            }
+                        }
+                    }
+
+                    await page.waitForTimeout(1000);
+
+                    // Find and extract Realized PnL
+                    // Find the 7D Realized PnL element
+                    const sevenDayPnLDiv = await page.locator(
+                        '.ant-modal-content div:text-matches(".*Realized PnL.*")',
+                    );
+
+                    // Get the value div that appears right after the 7D Realized PnL div
+                    const sevenDayPnLValueDiv = sevenDayPnLDiv.locator('xpath=./following-sibling::div').first();
+
+                    revenueValue = (await sevenDayPnLValueDiv.textContent()) || '0';
+                    cleanRevenueValue = revenueValue.replace(/[^0-9MKk.]/g, ''); // Remove everything except numbers, dots, M and K
+
+                    revenueDollars = parseFloat(cleanRevenueValue);
+                    if (cleanRevenueValue.toUpperCase().endsWith('M')) {
+                        revenueDollars *= 1000000;
+                    } else if (cleanRevenueValue.toUpperCase().endsWith('K')) {
+                        revenueDollars *= 1000;
+                    }
+
+                    // Get the 7D PnL value
+                    const sevenDayPnLValue = (await sevenDayPnLValueDiv.textContent()) || '0';
+                    const cleanSevenDayPnLValue = sevenDayPnLValue.replace(/[^0-9MKk.]/g, '');
+
+                    pnlDollars = parseFloat(cleanSevenDayPnLValue);
+                    if (cleanSevenDayPnLValue.toUpperCase().endsWith('M')) {
+                        pnlDollars *= 1000000;
+                    } else if (cleanSevenDayPnLValue.toUpperCase().endsWith('K')) {
+                        pnlDollars *= 1000;
+                    }
+
+                    console.log(`Row ${rowNumber} - 7D Realized PnL:`, pnlDollars);
+                    if (pnlDollars < 0) {
+                        console.log(`Row ${rowNumber} - Not interested in wallet - 7D PnL is too low: ${pnlDollars}`);
+                        incrementPortfoliosChecked();
+                        await page.click('button.w-5.h-5.bg-transparent.outline-none');
+                        await page.waitForTimeout(500);
+                        continue;
+                    }
+                    console.log(`Row ${rowNumber} - 7D Total Revenue:`, revenueDollars);
 
                     // Find and extract Total Spent
                     const totalSpentSpan = await page.locator('span:text("Total Spent")');
