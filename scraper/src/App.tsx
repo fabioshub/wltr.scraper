@@ -321,9 +321,9 @@ function App() {
     };
 
     return (
-        <div className="min-h-screen  py-8 px-4">
-            <div className="max-w-6xl mx-auto space-y-6">
-                <Card className="mb-8  shadow-none border-none">
+        <div className="min-h-screen py-8 px-4">
+            <div className="max-w-7xl mx-auto space-y-6">
+                <Card className="mb-8 shadow-none border-none">
                     <CardHeader>
                         <CardTitle className="text-2xl font-bold tracking-tight">WLTR. Scraper v1</CardTitle>
                     </CardHeader>
@@ -407,40 +407,6 @@ function App() {
                                     onChange={handleInputChange('START_FROM_ROW')}
                                     placeholder="Enter start from row"
                                 />
-                            </div>
-
-                            <div className="space-y-2">
-                                <label className="text-sm font-medium">Chrome Debug Port</label>
-                                <Input
-                                    type="number"
-                                    value={config.CHROME_DEBUG_PORT}
-                                    onChange={handleInputChange('CHROME_DEBUG_PORT')}
-                                    placeholder="Enter Chrome debug port"
-                                />
-                            </div>
-
-                            <div className="space-y-2">
-                                <label className="text-sm font-medium">Base URL</label>
-                                <Input
-                                    type="text"
-                                    value={config.BASE_URL}
-                                    onChange={handleInputChange('BASE_URL')}
-                                    placeholder="Enter base URL"
-                                />
-                            </div>
-
-                            <div className="grid w-full items-center gap-1.5">
-                                <label className="text-sm font-medium">HOST IP</label>
-                                <Input
-                                    type="text"
-                                    id="HOST_IP"
-                                    value={config.HOST_IP}
-                                    onChange={handleInputChange('HOST_IP')}
-                                    placeholder="Enter host IP"
-                                />
-                                <p className="text-sm text-muted-foreground">
-                                    The IP address of the host machine (use 'localhost' for Docker)
-                                </p>
                             </div>
 
                             <div className="pt-4">

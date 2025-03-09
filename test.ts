@@ -633,6 +633,7 @@ async function main() {
                         roi: `${roi.toFixed(2)}%`,
                         pnl: `${pnlDollars}`,
                         link: `http://neo.bullx.io/portfolio/${portfolioId}`,
+                        createdAt: new Date().toISOString(),
                     };
 
                     // Read existing data from file, or create new if doesn't exist
